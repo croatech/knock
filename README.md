@@ -47,12 +47,16 @@ Finally, run the install generator:
 It will create the following initializer `config/initializers/knock.rb`.
 This file contains all the informations about the existing configuration options.
 
-If you don't use an external authentication solution like Auth0, you also need to provide a way for users to sign in:
-
-    $ rails generate knock:token_controller user
-
-This will generate the controller `user_token_controller.rb` and add the required route to your `config/routes.rb` file.
-You can also provide another entity instead of `user`. E.g. `admin`
+You need to create endpoint to sign_in. For example `auth_controller#create`
+```
+class AuthController < ApiController
+  def create
+    render json: { token: ::Knock::AuthTokenController.new.create(params) }
+  end
+end
+```
+Difference between original knock and this fork is you can implement your controller from whichever you want in the project.
+If you want authorize another model, just call (`Knock::AuthTokenController.new.create(params, model_name)`)
 
 ### Requirements
 

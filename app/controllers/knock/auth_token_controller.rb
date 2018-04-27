@@ -4,13 +4,19 @@ module Knock
   class AuthTokenController < ApplicationController
     before_action :authenticate
 
-    def create
-      render json: auth_token, status: :created
+    def create(params, entity_name = nil)
+      @params = params.require(:auth).permit(:email, :password)
+      @entity_name = entity_name || 'User'
+
+      auth_token.token
     end
 
-  private
+    private
+
+    attr_reader :params, :entity_name
+
     def authenticate
-      unless entity.present? && entity.authenticate(auth_params[:password])
+      unless entity.present? && entity.authenticate(params[:password])
         raise Knock.not_found_exception_class
       end
     end
@@ -28,20 +34,12 @@ module Knock
         if entity_class.respond_to? :from_token_request
           entity_class.from_token_request request
         else
-          entity_class.find_by email: auth_params[:email]
+          entity_class.find_by email: params[:email]
         end
     end
 
     def entity_class
       entity_name.constantize
-    end
-
-    def entity_name
-      self.class.name.scan(/\w+/).last.split('TokenController').first
-    end
-
-    def auth_params
-      params.require(:auth).permit :email, :password
     end
   end
 end
