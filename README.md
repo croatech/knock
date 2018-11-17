@@ -55,8 +55,8 @@ class AuthController < ApiController
   end
 end
 ```
-Difference between original knock and this fork is you can implement your controller from whichever you want in the project.
-If you want authorize another model, just call (`Knock::AuthTokenController.new.create(params, model_name)`)
+Difference between original knock and this fork is you can implement your controller from wherever you want in the project.
+If you want to authorize another model, just call (`Knock::AuthTokenController.new.create(params, model_name)`)
 
 ### Requirements
 
