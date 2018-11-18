@@ -11,6 +11,11 @@ Seamless JWT authentication for Rails API
 
 Knock is an authentication solution for Rails API-only application based on JSON Web Tokens.
 
+Differences between original knock and this fork:
+1) You can use auth call wherever you want in your project, not only in predefined TokenControllers
+2) If you want to authorize another model, just call `Knock::AuthTokenController.new.create(params: params, entity_name: model_name)`
+3) If you want to use custom field to auth, just call `Knock::AuthTokenController.new.create(params: params, field: :username)`
+
 ### What are JSON Web Tokens?
 
 [![JWT](http://jwt.io/assets/badge.svg)](http://jwt.io/)
@@ -55,8 +60,6 @@ class AuthController < ApiController
   end
 end
 ```
-Difference between original knock and this fork is you can implement your controller from wherever you want in the project.
-If you want to authorize another model, just call (`Knock::AuthTokenController.new.create(params, model_name)`)
 
 ### Requirements
 

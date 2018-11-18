@@ -4,8 +4,9 @@ module Knock
   class AuthTokenController < ApplicationController
     before_action :authenticate
 
-    def create(params, entity_name = nil)
-      @params = params.require(:auth).permit(:email, :password)
+    def create(params:, field: :email, entity_name: nil)
+      @field = field
+      @params = params
       @entity_name = entity_name || 'User'
 
       auth_token.token
@@ -13,7 +14,7 @@ module Knock
 
     private
 
-    attr_reader :params, :entity_name
+    attr_reader :params, :field, :entity_name
 
     def authenticate
       unless entity.present? && entity.authenticate(params[:password])
@@ -34,8 +35,13 @@ module Knock
         if entity_class.respond_to? :from_token_request
           entity_class.from_token_request request
         else
-          entity_class.find_by email: params[:email]
+          entity_class.find_by(query_hash)
         end
+    end
+
+    def query_hash
+      field_hash = {}
+      field_hash[field] = params[field]
     end
 
     def entity_class
